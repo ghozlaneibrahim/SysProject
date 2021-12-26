@@ -29,7 +29,8 @@ m = folium.Map(
     zoom_start = 3,
     attr="My Data Attribution",
 )
-
+# makacho had el fichier 3endi ana 
+#print("okk")
 f = open("maroc.json")
 
 

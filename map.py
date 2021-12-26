@@ -29,14 +29,10 @@ m = folium.Map(
     zoom_start = 3,
     attr="My Data Attribution",
 )
-<<<<<<< HEAD
+
 
 f = open("Shape.json")
-=======
-# makacho had el fichier 3endi ana 
-#print("okk")
-f = open("maroc.json")
->>>>>>> 0990c684c91af11110191e29266f09ef961eb4c3
+
 
 
 data = json.loads(f.read())

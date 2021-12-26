@@ -30,7 +30,7 @@ m = folium.Map(
     attr="My Data Attribution",
 )
 
-f = open("maroc.json")
+f = open("Shape.json")
 
 
 data = json.loads(f.read())

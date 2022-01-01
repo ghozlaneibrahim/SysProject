@@ -11,7 +11,7 @@ style2 = {"fillColor": "#228B22", "color": "#eedcdd"}
 # create map object
 locations = [func.image_coordinates('photo{}.jpg'.format(i)) for i in range(2,5)]
 
-
+Sphotos=['photo{}.jpg'.format(i) for i in range (1,5)]
 
 
 
@@ -45,7 +45,7 @@ for cityCord in citiesCord:
 
     folium.Marker(
         [cityCord[1], cityCord[0]],
-        popup="<strong> photo{} </strong>".format(i),
+        popup="<b>Name : </b> photo{} <br> <b> location </b> {} , {} <br> <img src={} height=200 width=290>".format(i,locations[i-1].longitude, locations[i-1].latitude,Sphotos[i-1]),
         icon=folium.Icon(color="red"),
     ).add_to(m)
     i+=1

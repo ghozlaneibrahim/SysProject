@@ -13,6 +13,7 @@ from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 class MainWindow(QDialog):
+    global filePathArray
     def setupUi(self, Dialog):
         self.calendarWidget = QtWidgets.QCalendarWidget(self.frame_2)
         self.calendarWidget.setGeometry(QtCore.QRect(170, 190, 392, 236))
@@ -48,6 +49,7 @@ class MainWindow(QDialog):
         fileAddrss1 = fname[0]
         self.line1.setText(fname[0])
         print(fileAddrss1)
+        filePathArray[0]=fileAddrss1
 
     def browsefiles2(self):
         global fileAddrss2
@@ -55,6 +57,7 @@ class MainWindow(QDialog):
         fileAddrss2 = fname[0]
         self.line2.setText(fname[0])
         print(fileAddrss2)
+        filePathArray[1]=fileAddrss2
 
     def browsefiles3(self):
         global fileAddrss3
@@ -62,12 +65,14 @@ class MainWindow(QDialog):
         fileAddrss3 = fname[0]
         self.line3.setText(fname[0])
         print(fileAddrss3)
+        filePathArray[2]=fileAddrss3
 
     def showmap(self):
         print("maaap")
-        if (fileAddrss1 == "") or (fileAddrss2 == "") or (fileAddrss3 == ""):
+        if '' in filePathArray:
             QMessageBox.about(self, "Warning", "You have to select 3 images!")
         else:
+            CreateMap(filePathArray)
             self.loadPage()
 
     def loadPage(self):
@@ -85,9 +90,9 @@ def CreateMap(Photos_path_name_array):
     ## fog hadi ndiro win lazm user ymed les images w  7na njbdo les cites
     style2 = {"fillColor": "#228B22", "color": "#eedcdd"}
     # create map object
-    locations = [func.image_coordinates(Photos_path_name_array[i]) for i in range(2,5)]
+    locations = [func.image_coordinates(Photos_path_name_array[i]) for i in range(3)]
 
-    Sphotos=[Photos_path_name_array[i] for i in range (1,5)]
+    Sphotos=[Photos_path_name_array[i] for i in range (3)]
 
 
 
@@ -126,10 +131,10 @@ def CreateMap(Photos_path_name_array):
         ).add_to(m)
         i+=1
 
-        
+
 
     # Genereate map
-   
+
     return m.save("map.html")
 
 # w hna t7t ydir surface w yrsom tmnkii7 hadak w nchlh nkono kmlna
@@ -137,7 +142,7 @@ def CreateMap(Photos_path_name_array):
 fileAddrss1=""
 fileAddrss2=""
 fileAddrss3=""
-
+filePathArray=['','','']
 app=QApplication(sys.argv)
 mainwindow=MainWindow()
 widget=QtWidgets.QStackedWidget()

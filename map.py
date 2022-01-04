@@ -81,55 +81,56 @@ class MainWindow(QDialog):
 
 
 
+def CreateMap(Photos_path_name_array):
+    ## fog hadi ndiro win lazm user ymed les images w  7na njbdo les cites
+    style2 = {"fillColor": "#228B22", "color": "#eedcdd"}
+    # create map object
+    locations = [func.image_coordinates(Photos_path_name_array[i]) for i in range(2,5)]
 
-## fog hadi ndiro win lazm user ymed les images w  7na njbdo les cites
-style2 = {"fillColor": "#228B22", "color": "#eedcdd"}
-# create map object
-locations = [func.image_coordinates('photo{}.jpg'.format(i)) for i in range(2,5)]
-
-Sphotos=['photo{}.jpg'.format(i) for i in range (1,5)]
-
-
-
-
-location = locations[0]
-# hna yakhdm map
-m = folium.Map(
-    location=[location.latitude, location.longitude],
-    tiles="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
-    zoom_size=20,
-    zoom_start = 10,
-    attr="My Data Attribution",
-)
-
-
-f = open("Shape.json")
+    Sphotos=[Photos_path_name_array[i] for i in range (1,5)]
 
 
 
-data = json.loads(f.read())
-citiesCord = data["features"][0]["geometry"]["coordinates"][0]
-for i in range(0, len(locations)):
-    if locations[i] != "" :
-        data["features"][0]["geometry"]["coordinates"][0].append(
-            [locations[i].longitude, locations[i].latitude]
-        )
-i =1
-for cityCord in citiesCord:
 
-    folium.GeoJson(data, style_function=lambda x: style2).add_to(m)
+    location = locations[0]
+    # hna yakhdm map
+    m = folium.Map(
+        location=[location.latitude, location.longitude],
+        tiles="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
+        zoom_size=20,
+        zoom_start = 10,
+        attr="My Data Attribution",
+    )
 
-    folium.Marker(
-        [cityCord[1], cityCord[0]],
-        popup="<b>Name : </b> photo{} <br> <b> location </b> {} , {} <br> <img src={} height=200 width=290>".format(i,locations[i-1].longitude, locations[i-1].latitude,Sphotos[i-1]),
-        icon=folium.Icon(color="red"),
-    ).add_to(m)
-    i+=1
 
-    
+    f = open("Shape.json")
 
-# Genereate map
-m.save("map.html")
+
+
+    data = json.loads(f.read())
+    citiesCord = data["features"][0]["geometry"]["coordinates"][0]
+    for i in range(0, len(locations)):
+        if locations[i] != "" :
+            data["features"][0]["geometry"]["coordinates"][0].append(
+                [locations[i].longitude, locations[i].latitude]
+            )
+    i =1
+    for cityCord in citiesCord:
+
+        folium.GeoJson(data, style_function=lambda x: style2).add_to(m)
+
+        folium.Marker(
+            [cityCord[1], cityCord[0]],
+            popup="<b>Name : </b> photo{} <br> <b> location </b> {} , {} <br> <img src={} height=200 width=290>".format(i,locations[i-1].longitude, locations[i-1].latitude,Sphotos[i-1]),
+            icon=folium.Icon(color="red"),
+        ).add_to(m)
+        i+=1
+
+        
+
+    # Genereate map
+   
+    return m.save("map.html")
 
 # w hna t7t ydir surface w yrsom tmnkii7 hadak w nchlh nkono kmlna
 

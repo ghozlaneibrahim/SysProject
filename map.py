@@ -33,7 +33,7 @@ class MainWindow(QDialog):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        loadUi("gui3.ui", self)
+        loadUi(r'C:\Users\alouane\PycharmProjects\SysProject\gui3.ui', self)
         self.choseBtn1.clicked.connect(self.browsefiles1)
         self.choseBtn2.clicked.connect(self.browsefiles2)
         self.choseBtn3.clicked.connect(self.browsefiles3)
@@ -42,6 +42,7 @@ class MainWindow(QDialog):
         btn = QPushButton("button1")
         self.webEngineView = QtWebEngineWidgets.QWebEngineView(self.frame_2)
         self.webEngineView.setGeometry(QtCore.QRect(0, 0, 1450, 900))
+        self.loadFirstPage()
 
     def browsefiles1(self):
         fname = QFileDialog.getOpenFileName(self, 'Open file', '', 'Images (*.png, *.xmp *.jpg)')
@@ -74,10 +75,13 @@ class MainWindow(QDialog):
         else:
             CreateMap(filePathArray)
             self.loadPage()
-
+    def loadFirstPage(self):
+        with open(r'C:\Users\alouane\PycharmProjects\SysProject\map1.html', 'r') as f:
+            html = f.read()
+            self.webEngineView.setHtml(html)
     def loadPage(self):
 
-        with open('map.html', 'r') as f:
+        with open(r'C:\Users\alouane\PycharmProjects\SysProject\map.html', 'r') as f:
             html = f.read()
             self.webEngineView.setHtml(html)
 
@@ -103,12 +107,14 @@ def CreateMap(Photos_path_name_array):
         location=[location.latitude, location.longitude],
         tiles="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png",
         zoom_size=20,
-        zoom_start = 10,
+        zoom_start=6,
+        max_zoom=11,
+        min_zoom=6,
         attr="My Data Attribution",
     )
 
 
-    f = open("Shape.json")
+    f = open(r'C:\Users\alouane\PycharmProjects\SysProject\Shape.json')
 
 
 
@@ -135,13 +141,14 @@ def CreateMap(Photos_path_name_array):
 
     # Genereate map
 
-    return m.save("map.html")
+    return m.save(r'C:\Users\alouane\PycharmProjects\SysProject\map.html')
 
 # w hna t7t ydir surface w yrsom tmnkii7 hadak w nchlh nkono kmlna
 
 fileAddrss1=""
 fileAddrss2=""
 fileAddrss3=""
+#CreateEmptyMap()
 filePathArray=['','','']
 app=QApplication(sys.argv)
 mainwindow=MainWindow()

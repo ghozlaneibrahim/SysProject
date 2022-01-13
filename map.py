@@ -77,17 +77,22 @@ class MainWindow(QDialog):
             CreateMap(filePathArray)
 
 
-            if(noCordination!=-1):
+            if(noCordination!=(-1)):
                 print(noCordination)
                 if (noCordination==0):
                     QMessageBox.about(self, "Warning", "the image 1 does not have location coordinates!")
+
                 elif(noCordination==1):
                     QMessageBox.about(self, "Warning", "the image 2 does not have location coordinates!")
+
                 elif(noCordination==2):
                     QMessageBox.about(self, "Warning", "the image 3 does not have location coordinates!")
 
 
+
+
             self.loadPage()
+
 
     def loadFirstPage(self):
         with open(r'C:\Users\alouane\PycharmProjects\SysProject\map1.html', 'r') as f:
@@ -103,6 +108,7 @@ class MainWindow(QDialog):
 
 def CreateMap(Photos_path_name_array):
     global noCordination
+    noCordination = -1
     style2 = {"fillColor": "#228B22", "color": "#eedcdd"}
     # create map object
     locations = [func.image_coordinates(Photos_path_name_array[i]) for i in range(3)]
@@ -118,7 +124,7 @@ def CreateMap(Photos_path_name_array):
         if int(i.longitude) == 0 and int(i.latitude) == 0:
             images_index_without_exif.append(locations.index(i))
             new_locations.remove(i)
-            noCordination=nb
+            noCordination=locations.index(i)
 
     locations = new_locations
 
@@ -166,7 +172,7 @@ def CreateMap(Photos_path_name_array):
     return m.save(r'C:\Users\alouane\PycharmProjects\SysProject\map.html')
 
 
-# w hna t7t ydir surface w yrsom tmnkii7 hadak w nchlh nkono kmlna
+
 noCordination=-1
 fileAddrss1 = ""
 fileAddrss2 = ""

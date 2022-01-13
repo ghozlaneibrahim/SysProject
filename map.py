@@ -6,14 +6,15 @@ import func
 import sys
 from PyQt5 import QtWebEngineWidgets
 from PyQt5.QtWidgets import QPushButton, QMessageBox
-from PyQt5 import QtWidgets,QtCore
-from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog,QVBoxLayout
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtWidgets import QDialog, QApplication, QFileDialog, QVBoxLayout
 from PyQt5.uic import loadUi
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 
 
 class MainWindow(QDialog):
     global filePathArray
+
     def setupUi(self, Dialog):
         self.calendarWidget = QtWidgets.QCalendarWidget(self.frame_2)
         self.calendarWidget.setGeometry(QtCore.QRect(170, 190, 392, 236))
@@ -33,7 +34,7 @@ class MainWindow(QDialog):
 
     def __init__(self):
         super(MainWindow, self).__init__()
-        loadUi(r'C:\Users\alouane\PycharmProjects\SysProject\gui3.ui', self)
+        loadUi('gui3.ui', self)
         self.choseBtn1.clicked.connect(self.browsefiles1)
         self.choseBtn2.clicked.connect(self.browsefiles2)
         self.choseBtn3.clicked.connect(self.browsefiles3)
@@ -50,7 +51,7 @@ class MainWindow(QDialog):
         fileAddrss1 = fname[0]
         self.line1.setText(fname[0])
         print(fileAddrss1)
-        filePathArray[0]=fileAddrss1
+        filePathArray[0] = fileAddrss1
 
     def browsefiles2(self):
         global fileAddrss2
@@ -58,7 +59,7 @@ class MainWindow(QDialog):
         fileAddrss2 = fname[0]
         self.line2.setText(fname[0])
         print(fileAddrss2)
-        filePathArray[1]=fileAddrss2
+        filePathArray[1] = fileAddrss2
 
     def browsefiles3(self):
         global fileAddrss3
@@ -66,7 +67,7 @@ class MainWindow(QDialog):
         fileAddrss3 = fname[0]
         self.line3.setText(fname[0])
         print(fileAddrss3)
-        filePathArray[2]=fileAddrss3
+        filePathArray[2] = fileAddrss3
 
     def showmap(self):
         print("maaap")
@@ -75,33 +76,46 @@ class MainWindow(QDialog):
         else:
             CreateMap(filePathArray)
             self.loadPage()
+
     def loadFirstPage(self):
-        with open(r'C:\Users\alouane\PycharmProjects\SysProject\map1.html', 'r') as f:
+        with open('map1.html', 'r') as f:
             html = f.read()
             self.webEngineView.setHtml(html)
+
     def loadPage(self):
 
-        with open(r'C:\Users\alouane\PycharmProjects\SysProject\map.html', 'r') as f:
+        with open('map.html', 'r') as f:
             html = f.read()
             self.webEngineView.setHtml(html)
-
-
-
-
 
 
 def CreateMap(Photos_path_name_array):
-    ## fog hadi ndiro win lazm user ymed les images w  7na njbdo les cites
+
     style2 = {"fillColor": "#228B22", "color": "#eedcdd"}
     # create map object
     locations = [func.image_coordinates(Photos_path_name_array[i]) for i in range(3)]
 
-    Sphotos=[Photos_path_name_array[i] for i in range (3)]
 
+    # shof hna f location li tlgah 3ndo coordinates nta3o 0,0 howa li na7ih ya3ni mn i ta3 location t9der t3rfo w tgol l
+    # user bli hadi image rahi ghla6a dir wakhdokhra
 
+    new_locations = []
+    images_index_without_exif = []
+    for i in locations:
+        new_locations.append(i)
+        if int(i.longitude) == 0 and int(i.latitude) == 0:
+            images_index_without_exif.append(locations.index(i))
+            new_locations.remove(i)
 
+    locations = new_locations
 
-    location = locations[0]
+    for i in images_index_without_exif:
+        print('Image {} does not have Location coordinates'.format(i + 1))
+
+    Sphotos = [Photos_path_name_array[i] for i in range(3)]
+
+    location = func.Location()
+    location.latitude, location.longitude = 36.731141399722226, 3.183093799722222
     # hna yakhdm map
     m = folium.Map(
         location=[location.latitude, location.longitude],
@@ -112,52 +126,45 @@ def CreateMap(Photos_path_name_array):
         min_zoom=6,
         attr="My Data Attribution",
     )
+    if locations:
+        f = open('Shape.json')
 
+        data = json.loads(f.read())
+        citiesCord = data["features"][0]["geometry"]["coordinates"][0]
+        for i in range(0, len(locations)):
+            if locations[i] != "":
+                data["features"][0]["geometry"]["coordinates"][0].append(
+                    [locations[i].longitude, locations[i].latitude]
+                )
+        i = 1
+        for cityCord in citiesCord:
+            folium.GeoJson(data, style_function=lambda x: style2).add_to(m)
 
-    f = open(r'C:\Users\alouane\PycharmProjects\SysProject\Shape.json')
+            folium.Marker(
+                [cityCord[1], cityCord[0]],
+                popup="<b>Name : </b> photo{} <br> <b> location </b> {} , {} <br> <img src={} height=200 width=290>".format(
+                    i, locations[i - 1].longitude, locations[i - 1].latitude, Sphotos[i - 1]),
+                icon=folium.Icon(color="red"),
+            ).add_to(m)
+            i += 1
 
+    # Generate map
 
+    return m.save('map.html')
 
-    data = json.loads(f.read())
-    citiesCord = data["features"][0]["geometry"]["coordinates"][0]
-    for i in range(0, len(locations)):
-        if locations[i] != "" :
-            data["features"][0]["geometry"]["coordinates"][0].append(
-                [locations[i].longitude, locations[i].latitude]
-            )
-    i =1
-    for cityCord in citiesCord:
-
-        folium.GeoJson(data, style_function=lambda x: style2).add_to(m)
-
-        folium.Marker(
-            [cityCord[1], cityCord[0]],
-            popup="<b>Name : </b> photo{} <br> <b> location </b> {} , {} <br> <img src={} height=200 width=290>".format(i,locations[i-1].longitude, locations[i-1].latitude,Sphotos[i-1]),
-            icon=folium.Icon(color="red"),
-        ).add_to(m)
-        i+=1
-
-
-
-    # Genereate map
-
-    return m.save(r'C:\Users\alouane\PycharmProjects\SysProject\map.html')
 
 # w hna t7t ydir surface w yrsom tmnkii7 hadak w nchlh nkono kmlna
 
-fileAddrss1=""
-fileAddrss2=""
-fileAddrss3=""
-#CreateEmptyMap()
-filePathArray=['','','']
-app=QApplication(sys.argv)
-mainwindow=MainWindow()
-widget=QtWidgets.QStackedWidget()
+fileAddrss1 = ""
+fileAddrss2 = ""
+fileAddrss3 = ""
+# CreateEmptyMap()
+filePathArray = ['', '', '']
+app = QApplication(sys.argv)
+mainwindow = MainWindow()
+widget = QtWidgets.QStackedWidget()
 widget.addWidget(mainwindow)
 widget.setFixedWidth(1500)
 widget.setFixedHeight(900)
 widget.show()
 sys.exit(app.exec_())
-
-
-

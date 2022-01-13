@@ -90,13 +90,13 @@ class MainWindow(QDialog):
             self.loadPage()
 
     def loadFirstPage(self):
-        with open('map1.html', 'r') as f:
+        with open(r'C:\Users\alouane\PycharmProjects\SysProject\map1.html', 'r') as f:
             html = f.read()
             self.webEngineView.setHtml(html)
 
     def loadPage(self):
 
-        with open('map.html', 'r') as f:
+        with open(r'C:\Users\alouane\PycharmProjects\SysProject\map.html', 'r') as f:
             html = f.read()
             self.webEngineView.setHtml(html)
 
@@ -108,8 +108,7 @@ def CreateMap(Photos_path_name_array):
     locations = [func.image_coordinates(Photos_path_name_array[i]) for i in range(3)]
 
 
-    # shof hna f location li tlgah 3ndo coordinates nta3o 0,0 howa li na7ih ya3ni mn i ta3 location t9der t3rfo w tgol l
-    # user bli hadi image rahi ghla6a dir wakhdokhra
+
     nb=0
     new_locations = []
     images_index_without_exif = []
@@ -141,7 +140,7 @@ def CreateMap(Photos_path_name_array):
         attr="My Data Attribution",
     )
     if locations:
-        f = open('Shape.json')
+        f = open(r'C:\Users\alouane\PycharmProjects\SysProject\Shape.json')
 
         data = json.loads(f.read())
         citiesCord = data["features"][0]["geometry"]["coordinates"][0]
@@ -164,7 +163,7 @@ def CreateMap(Photos_path_name_array):
 
     # Generate map
 
-    return m.save('map.html')
+    return m.save(r'C:\Users\alouane\PycharmProjects\SysProject\map.html')
 
 
 # w hna t7t ydir surface w yrsom tmnkii7 hadak w nchlh nkono kmlna
